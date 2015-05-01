@@ -1,0 +1,22 @@
+language: scala
+scala:
+- 2.11.6
+jdk:
+- oraclejdk8
+sudo: false
+script:
+- sbt ++$TRAVIS_SCALA_VERSION -J-XX:ReservedCodeCacheSize=256M clean coverage test
+- find $HOME/.sbt -name "*.lock" | xargs rm
+- find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
+after_success:
+- sbt coveralls
+- test ${TRAVIS_PULL_REQUEST} == "false" && test ${TRAVIS_BRANCH} == "master" && sh
+  "$TRAVIS_BUILD_DIR/.travis-ci-bintray-credentials.sh" && sbt 'set version := version.value
+  + "." + System.getenv("TRAVIS_BUILD_NUMBER")' publish
+branches:
+  only:
+  - master
+env:
+  global:
+  - secure: EdgQNt5AehOH6/rD1mEvlNuOohydI0Zi39Z+Bamllz3ZHF8xu9yWvKlZWIou6klLg4Sfn0Czd7b+HwLByvdi0IuevuVUECLE992+Kov+ipzH6VdTR0mln1uTIMLEIMLsmyqfy07Utp4Uj6fQ+p8uz5LB/6uaXw0TGbwzGS0/Ed0=
+  - secure: h3Twut7ZzcfI6MEIzpfrPbzgLeMZRmmcXHtGCnA8rmJVW3OTH1TrDFMNqfOcxIGJsZMVso2AIh3Uhdc8QbNtc06btyBOrpQZYTlthnIPiPh79zApIiBrYMfMC3dGgl8ANlkU9Hp8KRK8rHKx3hjff4ZmNXY5N/Zu4rHsI7YEvTA=
