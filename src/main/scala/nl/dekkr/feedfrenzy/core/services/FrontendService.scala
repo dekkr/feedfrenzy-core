@@ -16,10 +16,10 @@ trait FrontendService {
         entity = HttpEntity(MediaTypes.`text/html`,
           <html>
             <head>
-              <title>Feedfrenzy-backend by DekkR projects</title>
+              <title>Feedfrenzy-core by DekkR projects</title>
             </head>
             <body>
-              <h1>Feedfrenzy-backend</h1>
+              <h1>Feedfrenzy-core</h1>
               <p>Ready to serve.</p>
             </body>
           </html>.buildString(stripComments = true)
