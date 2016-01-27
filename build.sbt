@@ -1,6 +1,6 @@
 lazy val commonSettings = Seq(
   organization := "dekkR projects",
-  version := "0.0.1",
+  version := "0.0.2",
   scalaVersion := "2.11.6"
 )
 
@@ -9,6 +9,10 @@ lazy val root = (project in file(".")).
   settings(
     name := "feedfrenzy-core"
   )
+  .enablePlugins(BuildInfoPlugin).settings(
+  buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
+  buildInfoPackage := "hello"
+)
 
 libraryDependencies ++= {
   val akkaV = "2.3.10"
@@ -34,39 +38,36 @@ libraryDependencies ++= {
   )
 }
 
+testOptions in Test += Tests.Argument("-oD")
 
+//coverageExcludedPackages := ".*BuildInfo.*;.*BootedCore.*;.*Boot.*"
+//coverageMinimum := 80
+//coverageFailOnMinimum := true
 
 Revolver.settings
 
 scalacOptions in ThisBuild ++= Seq(Opts.compile.deprecation, Opts.compile.unchecked) ++
   Seq("-Ywarn-unused-import", "-Ywarn-unused", "-Xlint", "-feature")
 
-Seq(buildInfoSettings:_*)
+// Seq(buildInfoSettings:_*)
 
-sourceGenerators in Compile <+= buildInfo
+// sourceGenerators in Compile <+= buildInfo
 
-buildInfoKeys := Seq[BuildInfoKey](version)
-
-buildInfoPackage := "feedfrenzy_core"
+// buildInfoKeys := Seq[BuildInfoKey](version)
+//
+// buildInfoPackage := "feedfrenzy_core"
 
 publishMavenStyle := true
 
 licenses := Seq(
   ("MIT", url(s"https://github.com/dekkr/${name.value}/blob/${version.value}/LICENSE")))
 
-bintraySettings
+  bintrayOrganization := Some("dekkr")
 
-bintray.Keys.bintrayOrganization in bintray.Keys.bintray := Some("dekkr")
+  bintrayRepository  := "feedr"
 
-bintray.Keys.repository in bintray.Keys.bintray := "feedr"
+  bintrayPackageLabels := Seq("microservice", "scraping")
 
-bintray.Keys.packageLabels in bintray.Keys.bintray := Seq("microservice", "syndication")
-
-lsSettings
-
-LsKeys.tags in LsKeys.lsync := (bintray.Keys.packageLabels in bintray.Keys.bintray).value
-
-externalResolvers in LsKeys.lsync := (resolvers in bintray.Keys.bintray).value
 
 assemblyJarName in assembly := s"${name.value}-assembly-${version.value}.jar"
 
